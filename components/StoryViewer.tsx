@@ -32,17 +32,28 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ user, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50">
       <div className="w-full max-w-md bg-white p-4 rounded-lg">
         <div className="relative">
+          <div className="absolute top-0 left-0 w-full flex space-x-1">
+            {user.stories.map((_, index) => (
+              <div
+                key={index}
+                className="h-1 bg-gray-300 flex-1 mx-1"
+                style={{
+                  background: index === currentStoryIndex ? "blue" : "gray",
+                  transform:
+                    index === currentStoryIndex
+                      ? `scaleX(${progress / 100})`
+                      : undefined,
+                  transformOrigin: "left",
+                  transition: "transform 0.05s linear",
+                }}
+              ></div>
+            ))}
+          </div>
           <img
             src={user.stories[currentStoryIndex]}
             alt={`Story ${currentStoryIndex + 1}`}
-            className="w-full h-auto rounded-lg"
+            className="w-full h-auto rounded-lg mt-2"
           />
-          <div className="absolute top-0 left-0 w-full h-2 bg-gray-300">
-            <div
-              className="h-2 bg-blue-500"
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
         </div>
         <button
           onClick={onClose}
