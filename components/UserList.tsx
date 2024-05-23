@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { User } from "../types";
+import StoryViewer from "../components/StoryViewer";
 
 const users: User[] = [
   {
@@ -19,28 +19,35 @@ const users: User[] = [
 ];
 
 const UserList: React.FC = () => {
-  const router = useRouter();
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const handleUserClick = (userId: number) => {
-    router.push(`/stories/${userId}`);
+  const handleUserClick = (user: User) => {
+    setSelectedUser(user);
+  };
+
+  const closeModal = () => {
+    setSelectedUser(null);
   };
 
   return (
-    <div className="flex gap-8 p-8 overflow-x-scroll no-scrollbar">
-      {users.map((user) => (
-        <div
-          key={user.id}
-          className="flex flex-col items-center cursor-pointer"
-          onClick={() => handleUserClick(user.id)}
-        >
-          <img
-            src={user.profileImage}
-            alt={user.name}
-            className="w-24 h-24 rounded-full border-2 border-gray-300"
-          />
-          <p className="mt-2 text-center">{user.name}</p>
-        </div>
-      ))}
+    <div className="relative">
+      <div className="flex gap-8 p-8 overflow-x-scroll no-scrollbar">
+        {users.map((user) => (
+          <div
+            key={user.id}
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => handleUserClick(user)}
+          >
+            <img
+              src={user.profileImage}
+              alt={user.name}
+              className="w-24 h-24 rounded-full border-2 border-gray-300"
+            />
+            <p className="mt-2 text-center">{user.name}</p>
+          </div>
+        ))}
+      </div>
+      {selectedUser && <StoryViewer user={selectedUser} onClose={closeModal} />}
     </div>
   );
 };
