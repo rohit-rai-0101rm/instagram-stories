@@ -39,6 +39,7 @@ const UserList: React.FC = () => {
 
   return (
     <div className="relative">
+      <h2 className="heading">Instagram</h2>
       <div className="flex gap-8 p-8 overflow-x-scroll no-scrollbar">
         {users.map((user) => (
           <div
