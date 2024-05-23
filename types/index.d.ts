@@ -4,3 +4,9 @@ export interface User {
     profileImage: string;
     stories: string[];
 }
+
+
+interface StoryViewerProps {
+    user: User;
+    onClose: () => void;
+}
