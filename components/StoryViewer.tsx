@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StoryViewerProps, User } from "../types";
+import { StoryViewerProps } from "../types";
 
 const StoryViewer: React.FC<StoryViewerProps> = ({ user, onClose }) => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
@@ -31,14 +31,35 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ user, onClose }) => {
     }
   };
 
+  const handlePreviousStory = () => {
+    if (currentStoryIndex > 0) {
+      setCurrentStoryIndex(currentStoryIndex - 1);
+      setProgress(0);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { clientX, target } = event;
+    const { offsetWidth } = target as HTMLDivElement;
+    const clickPosition = clientX;
+
+    if (clickPosition > offsetWidth / 2) {
+      handleNextStory();
+    } else {
+      handlePreviousStory();
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50">
-      <div className="w-full max-w-md bg-white p-4 rounded-lg relative">
-        <div className="absolute top-0 right-0 mt-2 mr-2">
+      <div className="w-full max-w-md h-full bg-black bg-opacity-50 p-4 rounded-lg relative flex items-center">
+        <div className="absolute top-4 right-2 z-10">
           <button onClick={onClose}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-600"
+              className="h-6 w-6 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -52,28 +73,32 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ user, onClose }) => {
             </svg>
           </button>
         </div>
-        <div className="relative" onClick={handleNextStory}>
-          <div className="absolute top-0 left-0 w-full flex space-x-1">
+        <div className="w-full" onClick={handleClick}>
+          <div className="absolute top-0 left-0 w-full flex space-x-1 mt-2 px-3">
             {user.stories.map((_, index) => (
               <div
                 key={index}
-                className="h-1 bg-gray-300 flex-1 mx-1"
+                className="h-1 flex-1 bg-gray-200 rounded-md overflow-hidden relative"
                 style={{
-                  background: index === currentStoryIndex ? "blue" : "gray",
-                  transform:
-                    index === currentStoryIndex
-                      ? `scaleX(${progress / 100})`
-                      : undefined,
-                  transformOrigin: "left",
-                  transition: "transform 0.05s linear",
+                  background: "#999999",
                 }}
-              ></div>
+              >
+                {index === currentStoryIndex && (
+                  <div
+                    className="h-full bg-white absolute left-0 top-0"
+                    style={{
+                      width: `${progress}%`,
+                      transition: "width 0.05s linear",
+                    }}
+                  ></div>
+                )}
+              </div>
             ))}
           </div>
           <img
             src={user.stories[currentStoryIndex]}
             alt={`Story ${currentStoryIndex + 1}`}
-            className="w-full h-auto rounded-lg mt-2 cursor-pointer"
+            className="w-full h-auto object-contain rounded-lg cursor-pointer"
           />
         </div>
       </div>
